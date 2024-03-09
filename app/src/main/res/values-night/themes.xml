@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.SplashActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/sky_blue</item>
+        <item name="android:statusBarColor">@color/sky_blue</item>
+        <item name="android:navigationBarColor">@color/sky_blue</item>
+    </style>
+
+    <style name="Theme.MainActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+    </style>
+</resources>

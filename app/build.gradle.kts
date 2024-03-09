@@ -33,6 +33,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -50,4 +54,8 @@ dependencies {
 
     //Lottie animation
     implementation ("com.airbnb.android:lottie:6.4.0")
+    //Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    //GSON Converter
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 }

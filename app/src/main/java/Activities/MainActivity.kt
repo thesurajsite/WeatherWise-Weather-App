@@ -1,16 +1,25 @@
 package Activities
 
+import android.Manifest
 import android.app.DownloadManager.Query
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.renderscript.ScriptGroup.Binding
 import android.util.Log
 import android.view.View
 import android.widget.SearchView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.weatherwise.R
 import com.example.weatherwise.databinding.ActivityMainBinding
 
@@ -24,11 +33,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.util.Objects
 import java.util.concurrent.locks.Condition
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    var locationManager: LocationManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityMainBinding.inflate(layoutInflater)
@@ -43,7 +56,119 @@ class MainActivity : AppCompatActivity() {
 
         searchCity()
 
+        ////////////////////////////////////////////
+
+        binding.locationButton.setOnClickListener {
+            requestLocation()
+//            Log.e("locationTag", "Show city location here")
+
+        }
+
+
     }
+
+    private fun requestLocation() {
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+      //  Log.d("LocationDebug", "Requesting location...")
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+         //   Log.d("LocationDebug", "Location permission not granted, requesting...")
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        } else {
+         //   Log.d("LocationDebug", "Location permission granted, requesting location updates...")
+            locationManager?.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null)
+        }
+    }
+
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+
+            Log.d("LocationDebug", "Received location update: ${location.latitude}, ${location.longitude}")
+
+            val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
+            val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+            if (addresses != null) {
+                Log.d("LocationDebug", "Number of addresses received: ${addresses.size}")
+                if (addresses.isNotEmpty()) {
+                    val cityName = addresses[0]?.locality
+                    Log.d("LocationDebug", "Extracted city name: $cityName")
+
+                    if (cityName != null) {
+                        fetchWeatherData(cityName)
+                    }
+
+                    ////////////////////////
+
+                    val address = addresses[0]
+
+                    val fullAddress = StringBuilder()
+
+                    for (i in 0..address.maxAddressLineIndex) {
+                        fullAddress.append(address.getAddressLine(i)).append(", ")
+                    }
+
+                    fullAddress.delete(fullAddress.length - 2, fullAddress.length)
+
+                    Log.d("LocationDebug", "Full address: $fullAddress")
+                    Toast.makeText(applicationContext, "$fullAddress", Toast.LENGTH_SHORT).show()
+
+                    ///////////////////
+
+
+
+
+                } else {
+                    Log.e("locationTag", "Unable to get city name from location")
+                }
+            }
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+
+        override fun onProviderEnabled(provider: String) {}
+
+        override fun onProviderDisabled(provider: String) {
+            AlertDialog.Builder(this@MainActivity)
+                .setMessage("Location services are disabled. Would you like to enable them?")
+                .setPositiveButton("Yes") { _, _ ->
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                requestLocation()
+            } else {
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_LOCATION_PERMISSION = 1001
+    }
+
+
 
     private fun searchCity() {
         binding.progressBar.visibility=View.VISIBLE

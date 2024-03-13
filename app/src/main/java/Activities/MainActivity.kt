@@ -104,22 +104,22 @@ class MainActivity : AppCompatActivity() {
                         fetchWeatherData(cityName)
                     }
 
-                    ////////////////////////
-
-                    val address = addresses[0]
-
-                    val fullAddress = StringBuilder()
-
-                    for (i in 0..address.maxAddressLineIndex) {
-                        fullAddress.append(address.getAddressLine(i)).append(", ")
-                    }
-
-                    fullAddress.delete(fullAddress.length - 2, fullAddress.length)
-
-                 //   Log.d("LocationDebug", "Full address: $fullAddress")
-                    Toast.makeText(applicationContext, "$fullAddress", Toast.LENGTH_SHORT).show()
-
-                    ///////////////////
+//                    ////////////////////////
+//
+//                    val address = addresses[0]
+//
+//                    val fullAddress = StringBuilder()
+//
+//                    for (i in 0..address.maxAddressLineIndex) {
+//                        fullAddress.append(address.getAddressLine(i)).append(", ")
+//                    }
+//
+//                    fullAddress.delete(fullAddress.length - 2, fullAddress.length)
+//
+//                    Log.d("LocationDebug", "Full address: $fullAddress")
+//                    Toast.makeText(applicationContext, "$fullAddress", Toast.LENGTH_SHORT).show()
+//
+//                    ///////////////////
 
 
 

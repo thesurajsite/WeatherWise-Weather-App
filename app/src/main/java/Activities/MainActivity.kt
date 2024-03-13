@@ -12,6 +12,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Vibrator
 import android.provider.Settings
 import android.renderscript.ScriptGroup.Binding
 import android.util.Log
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         binding=ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         val cityName=getCityName()
         binding.progressBar.visibility=View.VISIBLE
 
@@ -59,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         ////////////////////////////////////////////
 
         binding.locationButton.setOnClickListener {
+            vibrator.vibrate(50)
+            binding.progressBar.visibility=View.VISIBLE
             requestLocation()
 //            Log.e("locationTag", "Show city location here")
 
@@ -91,17 +95,18 @@ class MainActivity : AppCompatActivity() {
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
 
-            Log.d("LocationDebug", "Received location update: ${location.latitude}, ${location.longitude}")
+           // Log.d("LocationDebug", "Received location update: ${location.latitude}, ${location.longitude}")
 
             val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
             val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
             if (addresses != null) {
-                Log.d("LocationDebug", "Number of addresses received: ${addresses.size}")
+               // Log.d("LocationDebug", "Number of addresses received: ${addresses.size}")
                 if (addresses.isNotEmpty()) {
                     val cityName = addresses[0]?.locality
-                    Log.d("LocationDebug", "Extracted city name: $cityName")
+                   // Log.d("LocationDebug", "Extracted city name: $cityName")
 
+                    binding.searchBar.setQuery("$cityName", false)
                     if (cityName != null) {
                         fetchWeatherData(cityName)
                     }
@@ -118,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
                     fullAddress.delete(fullAddress.length - 2, fullAddress.length)
 
-                    Log.d("LocationDebug", "Full address: $fullAddress")
+                 //   Log.d("LocationDebug", "Full address: $fullAddress")
                     Toast.makeText(applicationContext, "$fullAddress", Toast.LENGTH_SHORT).show()
 
                     ///////////////////

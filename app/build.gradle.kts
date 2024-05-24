@@ -4,14 +4,14 @@ plugins {
 }
 
 android {
-    namespace = "com.example.weatherwise"
+    namespace = "com.surajverma.weatherwise"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.weatherwise"
+        applicationId = "com.surajverma.weatherwise"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

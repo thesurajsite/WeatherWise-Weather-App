@@ -18,8 +18,8 @@ import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.example.weatherwise.R
-import com.example.weatherwise.databinding.ActivityMainBinding
+import com.surajverma.weatherwise.R
+import com.surajverma.weatherwise.databinding.ActivityMainBinding
 
 import retrofit2.Call
 import retrofit2.Callback

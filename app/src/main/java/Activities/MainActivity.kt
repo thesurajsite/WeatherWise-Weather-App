@@ -104,25 +104,6 @@ class MainActivity : AppCompatActivity() {
                         fetchWeatherData(cityName)
                     }
 
-//                    ////////////////////////
-//
-//                    val address = addresses[0]
-//
-//                    val fullAddress = StringBuilder()
-//
-//                    for (i in 0..address.maxAddressLineIndex) {
-//                        fullAddress.append(address.getAddressLine(i)).append(", ")
-//                    }
-//
-//                    fullAddress.delete(fullAddress.length - 2, fullAddress.length)
-//
-//                    Log.d("LocationDebug", "Full address: $fullAddress")
-//                    Toast.makeText(applicationContext, "$fullAddress", Toast.LENGTH_SHORT).show()
-//
-//                    ///////////////////
-
-
-
 
                 } else {
                     Log.e("locationTag", "Unable to get city name from location")
@@ -207,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                     val maxTemp=responseBody.main.temp_max
                     val minTemp=responseBody.main.temp_min
                     val condition=responseBody.weather.firstOrNull()?.main?:"unknown"
-//
+
 
                     binding.temp.setText("$temperature°C")
                     binding.weather.setText("$condition")
